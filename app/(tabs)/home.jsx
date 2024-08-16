@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlatList, Image, RefreshControl, Text, View } from "react-native";
-
-import { images } from "../../constants";
+import { images } from "../../constants"; // Adjust this import as needed
 import { EmptyState, SearchInput } from "../../components";
 import { useSelector } from "react-redux";
 
 const Home = () => {
   const jwt = useSelector((state) => state.auth.jwt);
-
   const [refreshing, setRefreshing] = useState(false);
 
   console.log(jwt, "jwt");
@@ -20,23 +18,118 @@ const Home = () => {
     // setRefreshing(false);
   };
 
-  // Sample data for product categories
+  // The provided product categories data
   const productCategories = [
     {
-      id: "1",
-      name: "Weekly Removal Service",
+      id: 26,
+      name: "Cabin Rentals",
+      slug: "cabin-rentals",
+      parent: 18,
+      description: "",
+      display: "subcategories",
+      image: {
+        id: 968,
+        date_created: "2024-08-16T03:45:49",
+        date_created_gmt: "2024-08-16T03:45:49",
+        date_modified: "2024-08-16T03:50:35",
+        date_modified_gmt: "2024-08-16T03:50:35",
+        src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+        name: "Bear Img",
+        alt: "",
+      },
+      menu_order: 4,
+      count: 5,
     },
     {
-      id: "2",
-      name: "One Time Pick-Ups",
-    },
-    {
-      id: "3",
+      id: 19,
       name: "Junk Hauling Service",
+      slug: "junk-hauling-service",
+      parent: 0,
+      description: "",
+      display: "products",
+      image: {
+        id: 968,
+        date_created: "2024-08-16T03:45:49",
+        date_created_gmt: "2024-08-16T03:45:49",
+        date_modified: "2024-08-16T03:50:35",
+        date_modified_gmt: "2024-08-16T03:50:35",
+        src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+        name: "Bear Img",
+        alt: "",
+      },
+      menu_order: 5,
+      count: 2,
     },
     {
-      id: "4",
+      id: 17,
+      name: "One Time Pick-Ups",
+      slug: "one-time-pick-ups",
+      parent: 0,
+      description: "",
+      display: "products",
+      image: {
+        id: 968,
+        date_created: "2024-08-16T03:45:49",
+        date_created_gmt: "2024-08-16T03:45:49",
+        date_modified: "2024-08-16T03:50:35",
+        date_modified_gmt: "2024-08-16T03:50:35",
+        src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+        name: "Bear Img",
+        alt: "",
+      },
+      menu_order: 2,
+      count: 4,
+    },
+    {
+      id: 20,
       name: "Trailer Rental Service",
+      slug: "trailer-rental-service",
+      parent: 0,
+      description: "",
+      display: "products",
+      image: {
+        id: 968,
+        date_created: "2024-08-16T03:45:49",
+        date_created_gmt: "2024-08-16T03:45:49",
+        date_modified: "2024-08-16T03:50:35",
+        date_modified_gmt: "2024-08-16T03:50:35",
+        src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+        name: "Bear Img",
+        alt: "",
+      },
+      menu_order: 6,
+      count: 4,
+    },
+    {
+      id: 16,
+      name: "Uncategorized",
+      slug: "uncategorized",
+      parent: 0,
+      description: "",
+      display: "default",
+      image: null,
+      menu_order: 1,
+      count: 0,
+    },
+    {
+      id: 18,
+      name: "Weekly Removal Service",
+      slug: "weekly-removal-service",
+      parent: 0,
+      description: "",
+      display: "products",
+      image: {
+        id: 968,
+        date_created: "2024-08-16T03:45:49",
+        date_created_gmt: "2024-08-16T03:45:49",
+        date_modified: "2024-08-16T03:50:35",
+        date_modified_gmt: "2024-08-16T03:50:35",
+        src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+        name: "Bear Img",
+        alt: "",
+      },
+      menu_order: 3,
+      count: 13,
     },
   ];
 
@@ -45,11 +138,22 @@ const Home = () => {
       <FlatList
         data={productCategories}
         key={"2-columns"} // Static key to force a consistent render
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2} // Set number of columns to 2
         columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: 16 }} // Space between columns
         renderItem={({ item }) => (
           <View className="w-[48%] h-40 bg-lime-200 shadow-sm rounded-md mb-4 p-4 flex justify-center items-center">
+            {item.image ? (
+              <Image
+                source={{ uri: item.image.src }}
+                className="w-16 h-16 mb-2"
+                resizeMode="contain"
+              />
+            ) : (
+              <Text className="text-lg font-psemibold text-black-100 text-center">
+                No Image Available
+              </Text>
+            )}
             <Text className="text-lg font-psemibold text-black-100 text-center">
               {item.name}
             </Text>

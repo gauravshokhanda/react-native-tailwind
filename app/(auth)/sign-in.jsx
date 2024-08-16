@@ -14,43 +14,25 @@ const SignIn = () => {
   const jwt = useSelector((state) => state.auth.jwt);
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
-    email: "admin",
-    password: "admin@321",
+    email: "testd",
+    password: "vishal@321",
   });
 
   const submit = async () => {
     try {
-      const response = await axios.post(`${API_URL}/v1/token`, {
+      const response = await axios.post(`https://iamdeveloper.in/tina_project/wp-json/jwt-auth/v1/token`, {
         username: form.email,
         password: form.password,
       });
 
-      if (response.data.jwt_token) {
+      console.log(response,"response")
+
+      if (response.data.token) {
         Alert.alert("Success", "User signed in successfully");
         setSubmitting(true);
         dispatch(setIsLogged(true));
-        dispatch(setJwt(response.data.jwt_token));
-
-        // Make additional request to WordPress API
-        const wordpressConfig = {
-          method: 'post',
-          maxBodyLength: Infinity,
-          url: 'https://iamdeveloper.in/tina_project/wp-json/wp/v2/users/me',
-          headers: { 
-            'Authorization': `Bearer ${response.data.jwt_token}`, 
-            'Content-Type': 'multipart/form-data'
-          }
-        };
-
-        try {
-          const wpResponse = await axios.request(wordpressConfig);
-          console.log(JSON.stringify(wpResponse.data));
-          // Optionally, dispatch user data to your store or handle it as needed
-          dispatch(setUser(wpResponse.data));
-        } catch (wpError) {
-          console.error("WordPress API request failed", wpError);
-        }
-
+        dispatch(setJwt(response.data.token));
+        dispatch(setUser(response.data));
         router.replace("/home");
       }
     } catch (error) {

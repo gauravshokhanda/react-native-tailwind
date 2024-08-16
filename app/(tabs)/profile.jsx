@@ -10,9 +10,10 @@ const Profile = () => {
   const dispatch = useDispatch();
   const jwt = useSelector((state) => state.auth.jwt);
   const userData = useSelector((state) => state.auth.user);
+  console.log(userData,"userData")
 
   const user = {
-    name: userData.username,
+    name: userData.user_display_name,
     id: userData.id,
     email: userData.email,
     avatar: "https://randomuser.me/api/portraits/men/32.jpg",
