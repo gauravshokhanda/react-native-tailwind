@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
+import { View, Text, ScrollView, Dimensions, Alert, Image ,ActivityIndicator , StyleSheet } from "react-native";
 import { images } from "../../constants";
 import { CustomButton, FormField } from "../../components";
 import axios from 'axios';
@@ -13,19 +13,42 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const jwt = useSelector((state) => state.auth.jwt);
   const [isSubmitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     email: "testd",
     password: "vishal@321",
   });
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loaderContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background
+      padding: 20,
+      borderRadius: 10,
+    },
+    loadingText: {
+      marginTop: 10,
+      color: '#ffffff',
+      fontSize: 16,
+    },
+  });
   const submit = async () => {
+    setLoading(true); // Start loader
+
     try {
       const response = await axios.post(`https://iamdeveloper.in/tina_project/wp-json/jwt-auth/v1/token`, {
         username: form.email,
         password: form.password,
       });
 
-      console.log(response,"response")
+      console.log(response, "response");
 
       if (response.data.token) {
         Alert.alert("Success", "User signed in successfully");
@@ -38,13 +61,16 @@ const SignIn = () => {
     } catch (error) {
       Alert.alert("Error", "Sign in failed. Please try again.");
     } finally {
+      setLoading(false); // Stop loader
       setSubmitting(false);
     }
   };
-
   return (
+
+   
     <SafeAreaView className="bg-lime-600 h-full">
       <ScrollView>
+
         <View
           className="w-full flex justify-center h-full px-4 my-6"
           style={{
@@ -82,7 +108,14 @@ const SignIn = () => {
             containerStyles="mt-7"
             isLoading={isSubmitting}
           />
-
+          <View style={styles.container}>
+            {loading && (
+              <View style={styles.loaderContainer}>
+                <ActivityIndicator size="large" color="#ffffff" />
+                <Text style={styles.loadingText}>Signing In...</Text>
+              </View>
+            )}
+          </View>
           <View className="flex justify-center pt-5 flex-row gap-2">
             <Text className="text-lg text-gray-100 font-pregular">
               Don't have an account?
@@ -94,6 +127,7 @@ const SignIn = () => {
               Signup
             </Link>
           </View>
+          
         </View>
       </ScrollView>
     </SafeAreaView>
