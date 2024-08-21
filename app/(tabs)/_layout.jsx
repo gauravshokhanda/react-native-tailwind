@@ -32,7 +32,7 @@ const TabLayout = () => {
     isLogged: state.auth.isLogged,
   }));
 
-  if (!loading && !isLogged) return <Redirect href="/sign-in" />;
+  // if (!loading && !isLogged) return <Redirect href="/sign-in" />;
 
   return (
     <>
