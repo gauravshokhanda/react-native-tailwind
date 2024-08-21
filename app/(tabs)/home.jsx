@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList, Image, RefreshControl, Text, View } from "react-native";
+import { FlatList, Image, RefreshControl, Text, View ,TouchableOpacity} from "react-native";
 import { images } from "../../constants"; // Adjust this import as needed
 import { EmptyState, SearchInput } from "../../components";
 import { useSelector } from "react-redux";
+import { router } from "expo-router";
+import axios from 'axios';
 
 const Home = () => {
   const jwt = useSelector((state) => state.auth.jwt);
   const [refreshing, setRefreshing] = useState(false);
+  const [productCategorie,setProductCategories]= useState([])
+
+  const handleCategoryPress = (categoryId) => {
+    router.push(`/product?categoryId=${categoryId}`);
+   
+  };
 
   console.log(jwt, "jwt");
 
@@ -137,12 +145,14 @@ const Home = () => {
     <SafeAreaView className="bg-slate-100">
       <FlatList
         data={productCategories}
-        key={"2-columns"} // Static key to force a consistent render
+        key={"2-columns"}
         keyExtractor={(item) => item.id.toString()}
-        numColumns={2} // Set number of columns to 2
+        numColumns={2} 
         columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: 16 }} // Space between columns
         renderItem={({ item }) => (
+         
           <View className="w-[48%] h-40 bg-lime-200 shadow-sm rounded-md mb-4 p-4 flex justify-center items-center">
+             <TouchableOpacity onPress={() => handleCategoryPress(item.id)}>
             {item.image ? (
               <Image
                 source={{ uri: item.image.src }}
@@ -157,7 +167,9 @@ const Home = () => {
             <Text className="text-lg font-psemibold text-black-100 text-center">
               {item.name}
             </Text>
+            </TouchableOpacity>
           </View>
+        
         )}
         ListHeaderComponent={() => (
           <View className="flex my-6 px-4 space-y-6">
