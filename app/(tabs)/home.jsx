@@ -1,211 +1,207 @@
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FlatList, Image, RefreshControl, Text, View ,TouchableOpacity} from "react-native";
-import { images } from "../../constants"; // Adjust this import as needed
+import {
+  ScrollView,
+  Image,
+  RefreshControl,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
+import { images } from "../../constants";
 import { EmptyState, SearchInput } from "../../components";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
-import axios from 'axios';
+import Carousel from "../../components/Carousel";
+import ProductList from "./product";
 
 const Home = () => {
   const jwt = useSelector((state) => state.auth.jwt);
   const [refreshing, setRefreshing] = useState(false);
-  const [productCategorie,setProductCategories]= useState([])
+  const [productCategories, setProductCategories] = useState([]);
 
   const handleCategoryPress = (categoryId) => {
     router.push(`/product?categoryId=${categoryId}`);
-   
   };
 
-  console.log(jwt, "jwt");
+  const handleProductPress = (productId) => {
+    router.push(`/productList/${productId}`);
+    router.push(`/singleProduct`);
+  };
 
   const onRefresh = async () => {
     // Add your refresh logic here if needed
-    // setRefreshing(true);
-    // await refetch();
-    // setRefreshing(false);
   };
 
-  // The provided product categories data
-  const productCategories = [
+  const carouselItems = [
+    {
+      title: "First Slide",
+      image:
+        "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+    },
+    {
+      title: "Second Slide",
+      image:
+        "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+    },
+    {
+      title: "Third Slide",
+      image:
+        "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
+    },
+  ];
+
+  const productCategoriesData = [
     {
       id: 26,
       name: "Cabin Rentals",
       slug: "cabin-rentals",
-      parent: 18,
-      description: "",
-      display: "subcategories",
       image: {
-        id: 968,
-        date_created: "2024-08-16T03:45:49",
-        date_created_gmt: "2024-08-16T03:45:49",
-        date_modified: "2024-08-16T03:50:35",
-        date_modified_gmt: "2024-08-16T03:50:35",
         src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
-        name: "Bear Img",
-        alt: "",
       },
-      menu_order: 4,
-      count: 5,
     },
     {
       id: 19,
       name: "Junk Hauling Service",
       slug: "junk-hauling-service",
-      parent: 0,
-      description: "",
-      display: "products",
       image: {
-        id: 968,
-        date_created: "2024-08-16T03:45:49",
-        date_created_gmt: "2024-08-16T03:45:49",
-        date_modified: "2024-08-16T03:50:35",
-        date_modified_gmt: "2024-08-16T03:50:35",
         src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
-        name: "Bear Img",
-        alt: "",
       },
-      menu_order: 5,
-      count: 2,
     },
     {
       id: 17,
       name: "One Time Pick-Ups",
       slug: "one-time-pick-ups",
-      parent: 0,
-      description: "",
-      display: "products",
       image: {
-        id: 968,
-        date_created: "2024-08-16T03:45:49",
-        date_created_gmt: "2024-08-16T03:45:49",
-        date_modified: "2024-08-16T03:50:35",
-        date_modified_gmt: "2024-08-16T03:50:35",
         src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
-        name: "Bear Img",
-        alt: "",
       },
-      menu_order: 2,
-      count: 4,
     },
     {
       id: 20,
       name: "Trailer Rental Service",
       slug: "trailer-rental-service",
-      parent: 0,
-      description: "",
-      display: "products",
       image: {
-        id: 968,
-        date_created: "2024-08-16T03:45:49",
-        date_created_gmt: "2024-08-16T03:45:49",
-        date_modified: "2024-08-16T03:50:35",
-        date_modified_gmt: "2024-08-16T03:50:35",
         src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
-        name: "Bear Img",
-        alt: "",
       },
-      menu_order: 6,
-      count: 4,
-    },
-    {
-      id: 16,
-      name: "Uncategorized",
-      slug: "uncategorized",
-      parent: 0,
-      description: "",
-      display: "default",
-      image: null,
-      menu_order: 1,
-      count: 0,
-    },
-    {
-      id: 18,
-      name: "Weekly Removal Service",
-      slug: "weekly-removal-service",
-      parent: 0,
-      description: "",
-      display: "products",
-      image: {
-        id: 968,
-        date_created: "2024-08-16T03:45:49",
-        date_created_gmt: "2024-08-16T03:45:49",
-        date_modified: "2024-08-16T03:50:35",
-        date_modified_gmt: "2024-08-16T03:50:35",
-        src: "https://iamdeveloper.in/tina_project/wp-content/uploads/2024/08/Bear-Img.jpg",
-        name: "Bear Img",
-        alt: "",
-      },
-      menu_order: 3,
-      count: 13,
     },
   ];
 
+  const popularProductsData = [
+    {
+      id: 1,
+      name: "Beats Headphone White",
+      price: "$349.95",
+      sales: "450 sales",
+      rating: 4.5,
+      image: "https://example.com/beats.jpg",
+    },
+    {
+      id: 2,
+      name: "Powerbeats Wireless Earbuds White",
+      price: "$179.12",
+      sales: "450 sales",
+      rating: 4.5,
+      image: "https://example.com/powerbeats.jpg",
+    },
+    {
+      id: 3,
+      name: "Airpods Gen 2",
+      price: "$199.00",
+      sales: "302 sales",
+      rating: 4.3,
+      image: "https://example.com/airpods_gen2.jpg",
+    },
+    {
+      id: 4,
+      name: "Airpods Pro",
+      price: "$270.78",
+      sales: "601 sales",
+      rating: 4.6,
+      image: "https://example.com/airpods_pro.jpg",
+    },
+    // Add more products here
+  ];
+
+
   return (
-    <SafeAreaView className="bg-slate-100">
-      <FlatList
-        data={productCategories}
-        key={"2-columns"}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2} 
-        columnWrapperStyle={{ justifyContent: "space-between", paddingHorizontal: 16 }} // Space between columns
-        renderItem={({ item }) => (
-         
-          <View className="w-[48%] h-40 bg-lime-200 shadow-sm rounded-md mb-4 p-4 flex justify-center items-center">
-             <TouchableOpacity onPress={() => handleCategoryPress(item.id)}>
-            {item.image ? (
-              <Image
-                source={{ uri: item.image.src }}
-                className="w-16 h-16 mb-2"
-                resizeMode="contain"
-              />
-            ) : (
-              <Text className="text-lg font-psemibold text-black-100 text-center">
-                No Image Available
+    <SafeAreaView className="bg-slate-100 flex-1">
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 6 }}>
+        <View className="my-6 px-4 space-y-6">
+          <View className="flex-row justify-between items-center mb-6">
+            <View>
+              <Text className="text-sm text-gray-500">Welcome Back</Text>
+              <Text className="text-secondary-200 font-semibold">
+                J and M TRASH -B- GONE
               </Text>
-            )}
-            <Text className="text-lg font-psemibold text-black-100 text-center">
-              {item.name}
+            </View>
+            <Image
+              source={images.logo}
+              className="w-14 h-14"
+              resizeMode="contain"
+            />
+          </View>
+
+          <SearchInput />
+          <Carousel images={carouselItems} />
+          <View>
+            <Text className="text-sm font-semibold text-black-100 mb-3">
+              Product Categories
             </Text>
-            </TouchableOpacity>
-          </View>
-        
-        )}
-        ListHeaderComponent={() => (
-          <View className="flex my-6 px-4 space-y-6">
-            <View className="flex justify-between items-start flex-row mb-6">
-              <View>
-                <Text className="font-pmedium text-sm text-gray-500">
-                  Welcome Back
-                </Text>
-                <Text className="text-m font-psemibold text-white">
-                  J and M TRASH -B- GONE
-                </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View className="flex-row space-x-2">
+                {productCategoriesData.map((item) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    className="bg-white shadow-md rounded-lg overflow-hidden w-24 h-24 items-center justify-center"
+                    onPress={() => handleCategoryPress(item.id)}
+                  >
+                    <Image
+                      source={{ uri: item.image.src }}
+                      className="w-12 h-12"
+                      resizeMode="contain"
+                    />
+                    <Text
+                      className="text-xs mt-2 "
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {item.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
               </View>
-
-              <View className="mt-1.5">
+            </ScrollView>
+          </View> 
+           <Text className="text-sm font-semibold text-black-100 mb-3">
+              Popluar Product
+            </Text>
+            <View className="flex-wrap flex-row justify-between">
+            {popularProductsData.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                className="bg-white shadow-md rounded-lg overflow-hidden w-[48%] mb-4"
+                onPress={() => handleProductPress(item.id)}
+              >
                 <Image
-                  source={images.logo}
-                  className="w-9 h-10"
-                  resizeMode="contain"
+                  source={{ uri: item.image }}
+                  className="w-full h-32"
+                  resizeMode="cover"
                 />
-              </View>
-            </View>
-
-            <SearchInput />
-
-            <View className="w-full flex-1 pt-5 pb-8">
-              <Text className="text-lg font-pregular text-black-100 mb-3">
-                Product Categories
-              </Text>
-            </View>
+                <View className="p-3">
+                  <Text className="text-xs font-semibold text-black-100 mb-1" numberOfLines={1}>
+                    {item.name}
+                  </Text>
+                  <Text className="text-xs text-primary-500 font-bold">{item.price}</Text>
+                  <Text className="text-xs text-gray-500">{item.sales}</Text>
+                  <View className="flex-row items-center">
+                    <Text className="text-xs text-yellow-500">⭐ {item.rating}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
-        )}
-        ListEmptyComponent={() => <EmptyState title="No Products Found" />}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

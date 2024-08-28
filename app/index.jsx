@@ -51,6 +51,11 @@ const Welcome = () => {
             handlePress={() => router.replace("/home")}
             containerStyles="w-full mt-7"
           />
+           <CustomButton
+            title="login"
+            handlePress={() => router.replace("/sign-in")}
+            containerStyles="w-full mt-7"
+          />
         </View>
       </ScrollView>
 
