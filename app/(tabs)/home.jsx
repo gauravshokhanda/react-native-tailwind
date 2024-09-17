@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   ScrollView,
@@ -9,16 +9,48 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { images } from "../../constants";
-import { EmptyState, SearchInput } from "../../components";
+import { EmptyState, Loader, SearchInput } from "../../components";
 import { useSelector } from "react-redux";
 import { router } from "expo-router";
 import Carousel from "../../components/Carousel";
 import ProductList from "./product";
+import axios from "axios";
+import { consumerKey, consumerSecret } from "../../constants/api";
 
 const Home = () => {
   const jwt = useSelector((state) => state.auth.jwt);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [productCategories, setProductCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchProductCategories = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          'https://iamdeveloper.in/tina_project/wp-json/wc/v3/products/categories',
+          {
+            params: {
+              customer: 1,
+              consumer_key: consumerKey,
+              consumer_secret: consumerSecret,
+            },
+          }
+        );
+        setProductCategories(response.data);
+        console.log(response.data,"api data")
+      } catch (error) {
+        console.error("Failed to fetch product categories:", error);
+      }
+      finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchProductCategories();
+  }, []);
+
+console.log(productCategories,"products")
 
   const handleCategoryPress = (categoryId) => {
     router.push(`/product?categoryId=${categoryId}`);
@@ -143,20 +175,23 @@ const Home = () => {
 
           <SearchInput />
           <Carousel images={carouselItems} />
-          <View>
+          {loading ? ( // Show loading indicator while data is being fetched
+            <Loader isLoading={loading} />
+          ) : (
+            <View>
             <Text className="text-sm font-semibold text-black-100 mb-3">
               Product Categories
             </Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               <View className="flex-row space-x-2">
-                {productCategoriesData.map((item) => (
+                {productCategories.map((item) => (
                   <TouchableOpacity
                     key={item.id}
                     className="bg-white shadow-md rounded-lg overflow-hidden w-24 h-24 items-center justify-center"
                     onPress={() => handleCategoryPress(item.id)}
                   >
                     <Image
-                      source={{ uri: item.image.src }}
+                      source={{ uri: item.image?.src }}
                       className="w-12 h-12"
                       resizeMode="contain"
                     />
@@ -172,6 +207,8 @@ const Home = () => {
               </View>
             </ScrollView>
           </View> 
+          )}
+      
            <Text className="text-sm font-semibold text-black-100 mb-3">
               Popluar Product
             </Text>
